@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class MovementController : MonoBehaviour
 {
-    public float MaxSpeed = 10f;
-    public float MoveForce = 365f;
-    public float JumpForce = 10f;
+    public float Speed = 10f;
+    public float JumpForce = 1f;
+    public float JumpTime = 10f;
     public Transform groundCheck;
 
     private Rigidbody2D rb;
@@ -24,6 +24,12 @@ public class MovementController : MonoBehaviour
 
     bool CanTake { get { return itemNearby != null; } }
 
+    IEnumerator JumpTimer()
+    {
+        yield return new WaitForSeconds(JumpTime);
+        jump = false;
+    }
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -37,7 +43,14 @@ public class MovementController : MonoBehaviour
     {
         if (Input.GetButtonDown("Jump") && IsOnGround)
         {
+            StartCoroutine("JumpTimer");
             jump = true;
+        }
+
+        if(Input.GetButtonUp("Jump"))
+        {
+            StopCoroutine("JumpTimer");
+            jump = false;
         }
 
         if (Input.GetButtonDown("Take") && CanTake)
@@ -51,7 +64,7 @@ public class MovementController : MonoBehaviour
         var h = Input.GetAxis("Horizontal");
 
         var current_velocity = rb.velocity;
-        rb.velocity = new Vector2(h * MaxSpeed, rb.velocity.y);
+        rb.velocity = new Vector2(h * Speed, rb.velocity.y);
 
         if (ShouldFlip(h))
         {
@@ -91,8 +104,8 @@ public class MovementController : MonoBehaviour
 
     void Jump()
     {
-        jump = false;
-        rb.AddForce(Vector2.up * JumpForce);
+        var current_velocity = rb.velocity;
+        rb.velocity = new Vector2(rb.velocity.x, JumpForce);
     }
 
     bool ShouldFlip(float input)
