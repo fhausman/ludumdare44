@@ -122,7 +122,7 @@ GameObject:
   m_Component:
   - component: {fileID: 90548257}
   - component: {fileID: 90548256}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Grid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -170,7 +170,7 @@ GameObject:
   - component: {fileID: 1553487683}
   - component: {fileID: 1553487682}
   - component: {fileID: 1553487681}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Walls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
