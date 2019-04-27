@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,10 +16,15 @@ public class MovementController : MonoBehaviour
 
     private bool facingRight = true;
     private bool jump = false;
+
+    private bool dead = false;
+    private bool Dead { get { return dead; } set { dead = value; OnDead(); } }
+
     private float distToGround;
 
     private List<GameObject> inventory = new List<GameObject>();
     private GameObject itemNearby;
+    private new GameObject particleSystem;
 
     bool IsOnGround { get { return Physics2D.Linecast(trans.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground")); } }
 
@@ -35,12 +41,15 @@ public class MovementController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         trans = GetComponent<Transform>();
         collider = GetComponent<Collider2D>();
+        particleSystem = trans.GetChild(1).gameObject;
 
         distToGround = collider.bounds.extents.y;
     }
 
     void Update()
     {
+        if (Dead) return;
+
         if (Input.GetButtonDown("Jump") && IsOnGround)
         {
             StartCoroutine("JumpTimer");
@@ -61,6 +70,8 @@ public class MovementController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (Dead) return;
+
         var h = Input.GetAxis("Horizontal");
 
         var current_velocity = rb.velocity;
@@ -83,6 +94,11 @@ public class MovementController : MonoBehaviour
         {
             itemNearby = collision.gameObject;
         }
+        else if (collision.gameObject.tag == "Spikes")
+        {
+            Dead = true;
+        }
+        
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -122,12 +138,31 @@ public class MovementController : MonoBehaviour
         return false;
     }
 
+    private void OnDead()
+    {
+        rb.velocity = new Vector2(0, rb.velocity.y);
+        particleSystem.gameObject.SetActive(true);
+    }
+
+    void FlipTransform(Transform transf)
+    {
+        var ls = transf.localScale;
+        ls.x *= -1;
+        transf.localScale = ls;
+    }
+
+    void FlipParticleSystem()
+    {
+        FlipTransform(particleSystem.transform);
+        var rot = particleSystem.transform.localRotation;
+        rot.z *= -1;
+        particleSystem.transform.localRotation = rot;
+    }
+
     void Flip()
     {
         facingRight = !facingRight;
-
-        var ls = trans.localScale;
-        ls.x *= -1;
-        trans.localScale = ls;
+        FlipTransform(trans);
+        FlipParticleSystem();
     }
 }
