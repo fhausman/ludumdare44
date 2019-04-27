@@ -23,12 +23,12 @@ public class MovementController : MonoBehaviour
     private float distToGround;
 
     private List<GameObject> inventory = new List<GameObject>();
-    private GameObject itemNearby;
+    private GameObject interactiveObject;
     private new GameObject particleSystem;
 
     bool IsOnGround { get { return Physics2D.Linecast(trans.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground")); } }
 
-    bool CanTake { get { return itemNearby != null; } }
+    bool InRangeOfInteractiveObject { get { return interactiveObject != null; } }
 
     IEnumerator JumpTimer()
     {
@@ -56,15 +56,22 @@ public class MovementController : MonoBehaviour
             jump = true;
         }
 
-        if(Input.GetButtonUp("Jump"))
+        if (Input.GetButtonUp("Jump"))
         {
             StopCoroutine("JumpTimer");
             jump = false;
         }
 
-        if (Input.GetButtonDown("Take") && CanTake)
+        if (Input.GetButtonDown("Take") && InRangeOfInteractiveObject)
         {
-            Take();
+            if (interactiveObject.tag == "Item")
+            {
+                Take();
+            }
+            else if (interactiveObject.tag == "Interactive")
+            {
+                Interact();
+            }
         }
     }
 
@@ -90,32 +97,47 @@ public class MovementController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Item")
+        if (collision.gameObject.tag == "Item"
+            || collision.gameObject.tag == "Interactive")
         {
-            itemNearby = collision.gameObject;
+            interactiveObject = collision.gameObject;
         }
         else if (collision.gameObject.tag == "Spikes")
         {
             Dead = true;
         }
-        
+
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Item")
+        if (collision.gameObject.tag == "Item"
+            || collision.gameObject.tag == "Interactive")
         {
-            itemNearby = null;
+            interactiveObject = null;
         }
     }
 
     void Take()
     {
-        itemNearby.transform.parent = trans;
-        itemNearby.SetActive(false);
-        inventory.Add(itemNearby);
+        interactiveObject.transform.parent = trans;
+        interactiveObject.SetActive(false);
+        inventory.Add(interactiveObject);
 
-        itemNearby = null;
+        interactiveObject = null;
+    }
+
+    void Interact()
+    {
+        var interactive = interactiveObject.GetComponent<InteractiveObject>();
+        if(interactive.CanInteract(inventory))
+        {
+            interactive.Interact();
+        }
+        else
+        {
+            Debug.Log("Items missing ;(");
+        }
     }
 
     void Jump()

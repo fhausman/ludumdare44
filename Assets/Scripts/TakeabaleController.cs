@@ -5,7 +5,6 @@ using UnityEngine;
 public class TakeabaleController : MonoBehaviour
 {
     public GameObject keyObject;
-
     private GameObject instance;
 
     private void OnTriggerEnter2D(Collider2D collision)
