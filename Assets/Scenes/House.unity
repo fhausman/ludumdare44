@@ -915,28 +915,30 @@ GameObject:
   - component: {fileID: 1886996179}
   - component: {fileID: 1886996178}
   - component: {fileID: 1886996177}
+  - component: {fileID: 1886996180}
   m_Layer: 0
   m_Name: duckEgg
-  m_TagString: Untagged
+  m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1886996177
-MonoBehaviour:
+--- !u!70 &1886996177
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1886996176}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -900027084, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EffectColor: {r: 0.99034953, g: 1, b: 0, a: 0.5}
-  m_EffectDistance: {x: 1, y: -1}
-  m_UseGraphicAlpha: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 0.08, y: 0.12}
+  m_Direction: 0
 --- !u!212 &1886996178
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -999,6 +1001,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1886996180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1886996176}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3150ca129c77d3c46995b5fe58098991, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  keyObject: {fileID: 7412241637474376820, guid: 4bca8256a190f38408d1356f039e8b30,
+    type: 3}
 --- !u!1 &2146948947 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5153446570773973488, guid: 0e54c488250cd654781a115eb20f0dc6,
@@ -1132,6 +1148,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Character
+      objectReference: {fileID: 0}
+    - target: {fileID: 9152699010371796418, guid: dee68db0640490e41b7b8608757982b3,
+        type: 3}
+      propertyPath: m_TagString
+      value: Player
       objectReference: {fileID: 0}
     - target: {fileID: 9152699010371796446, guid: dee68db0640490e41b7b8608757982b3,
         type: 3}

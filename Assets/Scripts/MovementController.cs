@@ -17,7 +17,12 @@ public class MovementController : MonoBehaviour
     private bool jump = false;
     private float distToGround;
 
+    private List<GameObject> inventory = new List<GameObject>();
+    private GameObject itemNearby;
+
     bool IsOnGround { get { return Physics2D.Linecast(trans.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground")); } }
+
+    bool CanTake { get { return itemNearby != null; } }
 
     void Start()
     {
@@ -30,9 +35,14 @@ public class MovementController : MonoBehaviour
 
     void Update()
     {
-        if(Input.GetButtonDown("Jump") && IsOnGround)
+        if (Input.GetButtonDown("Jump") && IsOnGround)
         {
             jump = true;
+        }
+
+        if (Input.GetButtonDown("Take") && CanTake)
+        {
+            Take();
         }
     }
 
@@ -40,19 +50,43 @@ public class MovementController : MonoBehaviour
     {
         var h = Input.GetAxis("Horizontal");
 
-        rb.AddForce(Vector2.right * h * MoveForce);
-        if (Mathf.Abs(rb.velocity.x) > MaxSpeed)
-            rb.velocity = new Vector2(Mathf.Sign(rb.velocity.x) * MaxSpeed, rb.velocity.y);
+        var current_velocity = rb.velocity;
+        rb.velocity = new Vector2(h * MaxSpeed, rb.velocity.y);
 
-        if(ShouldFlip(h))
+        if (ShouldFlip(h))
         {
             Flip();
         }
 
-        if(jump)
+        if (jump)
         {
             Jump();
         }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Item")
+        {
+            itemNearby = collision.gameObject;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Item")
+        {
+            itemNearby = null;
+        }
+    }
+
+    void Take()
+    {
+        itemNearby.transform.parent = trans;
+        itemNearby.SetActive(false);
+        inventory.Add(itemNearby);
+
+        itemNearby = null;
     }
 
     void Jump()

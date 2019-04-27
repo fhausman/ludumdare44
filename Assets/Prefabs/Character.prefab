@@ -148,7 +148,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaxSpeed: 5
   MoveForce: 20
-  JumpForce: 350
+  JumpForce: 300
   groundCheck: {fileID: 2691861659423863436}
 --- !u!61 &118675445077149764
 BoxCollider2D:
