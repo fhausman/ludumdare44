@@ -7,22 +7,30 @@ public class MovementController : MonoBehaviour
     public float MaxSpeed = 10f;
     public float MoveForce = 365f;
     public float JumpForce = 10f;
+    public Transform groundCheck;
 
     private Rigidbody2D rb;
     private Transform trans;
+    private new Collider2D collider;
 
     private bool facingRight = true;
     private bool jump = false;
+    private float distToGround;
+
+    bool IsOnGround { get { return Physics2D.Linecast(trans.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground")); } }
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         trans = GetComponent<Transform>();
+        collider = GetComponent<Collider2D>();
+
+        distToGround = collider.bounds.extents.y;
     }
 
     void Update()
     {
-        if(Input.GetButtonDown("Jump"))
+        if(Input.GetButtonDown("Jump") && IsOnGround)
         {
             jump = true;
         }
