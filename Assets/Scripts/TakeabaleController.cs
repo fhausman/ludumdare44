@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TakebaleController : MonoBehaviour
+public class TakeabaleController : MonoBehaviour
 {
     public GameObject keyObject;
 
