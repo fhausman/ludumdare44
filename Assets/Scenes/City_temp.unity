@@ -1183,6 +1183,11 @@ PrefabInstance:
       propertyPath: m_CullingMode
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1975796311677153501, guid: dee68db0640490e41b7b8608757982b3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9152699010371796418, guid: dee68db0640490e41b7b8608757982b3,
         type: 3}
       propertyPath: m_Name

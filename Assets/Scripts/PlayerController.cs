@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour
     public Transform groundCheck;
     public Cinemachine.CinemachineVirtualCamera VirtualCamera;
     public Sprite SpikesDeathSprite;
+    public ParticleSystem ParticleSystem;
+
 
     private Rigidbody2D rb;
     private Transform trans;
@@ -25,7 +27,7 @@ public class PlayerController : MonoBehaviour
     private List<string> interactiveTags = new List<string>() { "Item", "Interactive", "Throwable" };
 
     private GameObject interactiveObject;
-    private new GameObject particleSystem;
+    private ParticleSystem instantiatedParticleSystem;
     private Cinemachine.CinemachineBasicMultiChannelPerlin noiseSystem;
 
     public bool IsDead { get { return dead; } }
@@ -43,7 +45,6 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         trans = GetComponent<Transform>();
         collider = GetComponent<Collider2D>();
-        particleSystem = trans.GetChild(1).gameObject;
         noiseSystem = VirtualCamera.GetCinemachineComponent<Cinemachine.CinemachineBasicMultiChannelPerlin>();
         distToGround = collider.bounds.extents.y;
     }
@@ -179,7 +180,8 @@ public class PlayerController : MonoBehaviour
         rb.velocity = new Vector2(0, rb.velocity.y);
 
         //launch blood
-        particleSystem.gameObject.SetActive(true);
+        instantiatedParticleSystem = Instantiate(ParticleSystem);
+        instantiatedParticleSystem.transform.position = trans.position;
 
         //camera shake
         StartCoroutine("CameraShake");
@@ -249,19 +251,10 @@ public class PlayerController : MonoBehaviour
         transf.localScale = ls;
     }
 
-    void FlipParticleSystem()
-    {
-        FlipTransform(particleSystem.transform);
-        var rot = particleSystem.transform.localRotation;
-        rot.z *= -1;
-        particleSystem.transform.localRotation = rot;
-    }
-
     void Flip()
     {
         facingRight = !facingRight;
         FlipTransform(trans);
-        FlipParticleSystem();
     }
 
     void BasicThrow(GameObject throwable)
