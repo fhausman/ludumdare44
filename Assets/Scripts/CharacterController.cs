@@ -9,7 +9,8 @@ public class CharacterController : MonoBehaviour
     public float JumpForce = 1f;
     public float JumpTime = 10f;
     public Transform groundCheck;
-    public Cinemachine.CinemachineVirtualCamera virtualCamera;
+    public Cinemachine.CinemachineVirtualCamera VirtualCamera;
+    public Sprite SpikesDeathSprite;
 
     private Rigidbody2D rb;
     private Transform trans;
@@ -19,8 +20,6 @@ public class CharacterController : MonoBehaviour
     private bool jump = false;
 
     private bool dead = false;
-    private bool Dead { get { return dead; } set { dead = value; OnDead(); } }
-
     private float distToGround;
 
     private List<GameObject> inventory = new List<GameObject>();
@@ -32,26 +31,20 @@ public class CharacterController : MonoBehaviour
 
     bool InRangeOfInteractiveObject { get { return interactiveObject != null; } }
 
-    IEnumerator JumpTimer()
-    {
-        yield return new WaitForSeconds(JumpTime);
-        jump = false;
-    }
-
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         trans = GetComponent<Transform>();
         collider = GetComponent<Collider2D>();
         particleSystem = trans.GetChild(1).gameObject;
-        noiseSystem = virtualCamera.GetCinemachineComponent<Cinemachine.CinemachineBasicMultiChannelPerlin>();
+        noiseSystem = VirtualCamera.GetCinemachineComponent<Cinemachine.CinemachineBasicMultiChannelPerlin>();
 
         distToGround = collider.bounds.extents.y;
     }
 
     void Update()
     {
-        if (Dead) return;
+        if (dead) return;
 
         if (Input.GetButtonDown("Jump") && IsOnGround)
         {
@@ -80,7 +73,7 @@ public class CharacterController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (Dead) return;
+        if (dead) return;
 
         var h = Input.GetAxis("Horizontal");
 
@@ -107,7 +100,7 @@ public class CharacterController : MonoBehaviour
         }
         else if (collision.gameObject.tag == "Spikes")
         {
-            Dead = true;
+            OnDead(collision.gameObject.tag);
         }
 
     }
@@ -118,6 +111,52 @@ public class CharacterController : MonoBehaviour
             || collision.gameObject.tag == "Interactive")
         {
             interactiveObject = null;
+        }
+    }
+
+    IEnumerator JumpTimer()
+    {
+        yield return new WaitForSeconds(JumpTime);
+        jump = false;
+    }
+
+    void DeathOnSpikes()
+    {
+        //Disable animator
+        var anim = GetComponent<Animator>();
+        anim.enabled = false;
+
+        //Replace sprite
+        var rend = GetComponent<SpriteRenderer>();
+        rend.sprite = SpikesDeathSprite;
+
+        //Snap position to grid
+        var position = trans.position;
+        Func<float, float> half_between = pos => (Mathf.Floor(pos) + Mathf.Ceil(pos)) / 2.0f;
+        position.x = half_between(position.x);
+        position.y = half_between(position.y);
+        trans.position = position;
+
+        //Sprites will perfectly overlap only on Scale.X = 1
+        if (trans.localScale.x != 1)
+            Flip();
+
+        //Disable gravity
+        rb.bodyType = RigidbodyType2D.Static;
+    }
+
+    void OnDead(string dead_place)
+    {
+        dead = true;
+        rb.velocity = new Vector2(0, rb.velocity.y);
+        particleSystem.gameObject.SetActive(true);
+        StartCoroutine("CameraShake");
+
+        switch(dead_place)
+        {
+            case "Spikes":
+                DeathOnSpikes();
+                break;
         }
     }
 
@@ -168,13 +207,6 @@ public class CharacterController : MonoBehaviour
         noiseSystem.m_AmplitudeGain = 20;
         yield return new WaitForSeconds(0.5f);
         noiseSystem.m_AmplitudeGain = 0;
-    }
-
-    private void OnDead()
-    {
-        rb.velocity = new Vector2(0, rb.velocity.y);
-        particleSystem.gameObject.SetActive(true);
-        StartCoroutine("CameraShake");
     }
 
     void FlipTransform(Transform transf)
