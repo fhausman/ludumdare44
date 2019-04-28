@@ -20,8 +20,8 @@ public class CharacterController : MonoBehaviour
     private bool jump = false;
     private bool dead = false;
     private float distToGround = 0f;
-
     private List<GameObject> inventory = new List<GameObject>();
+
     private GameObject interactiveObject;
     private new GameObject particleSystem;
     private Cinemachine.CinemachineBasicMultiChannelPerlin noiseSystem;
@@ -45,6 +45,7 @@ public class CharacterController : MonoBehaviour
     {
         if (dead) return;
 
+        #region Jump
         if (Input.GetButtonDown("Jump") && IsOnGround)
         {
             StartCoroutine("JumpTimer");
@@ -56,7 +57,9 @@ public class CharacterController : MonoBehaviour
             StopCoroutine("JumpTimer");
             jump = false;
         }
+        #endregion
 
+        #region Interaction
         if (Input.GetButtonDown("Take") && InRangeOfInteractiveObject)
         {
             if (interactiveObject.tag == "Item")
@@ -67,7 +70,8 @@ public class CharacterController : MonoBehaviour
             {
                 Interact();
             }
-        }
+        } 
+        #endregion
     }
 
     void FixedUpdate()
