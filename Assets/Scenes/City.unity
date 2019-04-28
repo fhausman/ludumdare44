@@ -435,6 +435,11 @@ PrefabInstance:
       propertyPath: m_ScreenX
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 5153446570773973490, guid: 0e54c488250cd654781a115eb20f0dc6,
+        type: 3}
+      propertyPath: m_YDamping
+      value: 0.2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0e54c488250cd654781a115eb20f0dc6, type: 3}
 --- !u!1 &771598505
