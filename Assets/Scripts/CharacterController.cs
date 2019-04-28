@@ -18,9 +18,8 @@ public class CharacterController : MonoBehaviour
 
     private bool facingRight = true;
     private bool jump = false;
-
     private bool dead = false;
-    private float distToGround;
+    private float distToGround = 0f;
 
     private List<GameObject> inventory = new List<GameObject>();
     private GameObject interactiveObject;
@@ -148,10 +147,16 @@ public class CharacterController : MonoBehaviour
     void OnDead(string dead_place)
     {
         dead = true;
+        //cancel horizontal movement
         rb.velocity = new Vector2(0, rb.velocity.y);
+
+        //launch blood
         particleSystem.gameObject.SetActive(true);
+
+        //camera shake
         StartCoroutine("CameraShake");
 
+        //place specific death behaviour
         switch(dead_place)
         {
             case "Spikes":
