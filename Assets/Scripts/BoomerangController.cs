@@ -24,6 +24,20 @@ public class BoomerangController : MonoBehaviour
         StartCoroutine("BoomerangThrow");
     }
 
+    bool Flying(Vector3 target)
+    {
+        transform.position =
+        Vector2.MoveTowards(
+            transform.position,
+            target,
+            Speed * Time.deltaTime
+        );
+
+        transform.Rotate(Vector3.forward, RotatationSpeed * Time.deltaTime);
+
+        return target != transform.position;
+    }
+
     IEnumerator BoomerangThrow()
     {
         isDeadly = true;
@@ -33,30 +47,12 @@ public class BoomerangController : MonoBehaviour
         var player_pos_at_throw = playerRef.transform.position;
         var dir = (player_pos_at_throw - target).x > 0 ? Vector2.right : Vector2.left;
 
-        while (transform.position != target)
+        while (Flying(target))
         {
-            transform.position =
-                Vector2.MoveTowards(
-                    transform.position,
-                    target,
-                    Speed * Time.deltaTime
-                );
-
-            transform.Rotate(Vector3.forward, RotatationSpeed * Time.deltaTime);
-
             yield return null;
         }
-        while(transform.position != player_pos_at_throw)
+        while(Flying(player_pos_at_throw))
         {
-            transform.position =
-                Vector2.MoveTowards(
-                    transform.position,
-                    player_pos_at_throw,
-                    Speed * Time.deltaTime
-                );
-
-            transform.Rotate(Vector3.forward, RotatationSpeed * Time.deltaTime);
-
             yield return null;
         }
 
