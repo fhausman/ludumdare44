@@ -279,6 +279,7 @@ public class PlayerController : MonoBehaviour
 
         if (throwable.name == "Boomerang")
         {
+            throwable.transform.position = transform.position;
             throwable.transform.parent = null;
             throwable.SetActive(true);
             throwable.GetComponent<BoomerangController>().Throw();

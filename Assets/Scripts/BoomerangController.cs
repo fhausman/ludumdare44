@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class BoomerangController : MonoBehaviour
 {
-    public bool Thrown = false;
+    public float RotatationSpeed = 1000f;
+    public float Speed = 12f;
     private GameObject boomerangRange;
     private GameObject playerRef;
     private Rigidbody2D rb;
+    private bool isDeadly;
 
     // Start is called before the first frame update
     void Start()
@@ -24,18 +26,23 @@ public class BoomerangController : MonoBehaviour
 
     IEnumerator BoomerangThrow()
     {
+        isDeadly = true;
         rb.constraints = RigidbodyConstraints2D.FreezePositionY;
 
         var target = boomerangRange.transform.position;
         var player_pos_at_throw = playerRef.transform.position;
+        var dir = (player_pos_at_throw - target).x > 0 ? Vector2.right : Vector2.left;
+
         while (transform.position != target)
         {
             transform.position =
                 Vector2.MoveTowards(
                     transform.position,
-                    boomerangRange.transform.position,
-                    8f * Time.deltaTime
+                    target,
+                    Speed * Time.deltaTime
                 );
+
+            transform.Rotate(Vector3.forward, RotatationSpeed * Time.deltaTime);
 
             yield return null;
         }
@@ -44,13 +51,17 @@ public class BoomerangController : MonoBehaviour
             transform.position =
                 Vector2.MoveTowards(
                     transform.position,
-                    boomerangRange.transform.position,
-                    8f * Time.deltaTime
+                    player_pos_at_throw,
+                    Speed * Time.deltaTime
                 );
+
+            transform.Rotate(Vector3.forward, RotatationSpeed * Time.deltaTime);
 
             yield return null;
         }
 
+        isDeadly = false;
         rb.constraints = RigidbodyConstraints2D.None;
+        rb.AddForce(dir * 200f);
     }
 }
