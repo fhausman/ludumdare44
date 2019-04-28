@@ -3,12 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MovementController : MonoBehaviour
+public class CharacterController : MonoBehaviour
 {
     public float Speed = 10f;
     public float JumpForce = 1f;
     public float JumpTime = 10f;
     public Transform groundCheck;
+    public Cinemachine.CinemachineVirtualCamera virtualCamera;
 
     private Rigidbody2D rb;
     private Transform trans;
@@ -25,6 +26,7 @@ public class MovementController : MonoBehaviour
     private List<GameObject> inventory = new List<GameObject>();
     private GameObject interactiveObject;
     private new GameObject particleSystem;
+    private Cinemachine.CinemachineBasicMultiChannelPerlin noiseSystem;
 
     bool IsOnGround { get { return Physics2D.Linecast(trans.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground")); } }
 
@@ -42,6 +44,7 @@ public class MovementController : MonoBehaviour
         trans = GetComponent<Transform>();
         collider = GetComponent<Collider2D>();
         particleSystem = trans.GetChild(1).gameObject;
+        noiseSystem = virtualCamera.GetCinemachineComponent<Cinemachine.CinemachineBasicMultiChannelPerlin>();
 
         distToGround = collider.bounds.extents.y;
     }
@@ -160,10 +163,18 @@ public class MovementController : MonoBehaviour
         return false;
     }
 
+    IEnumerator CameraShake()
+    {
+        noiseSystem.m_AmplitudeGain = 20;
+        yield return new WaitForSeconds(0.5f);
+        noiseSystem.m_AmplitudeGain = 0;
+    }
+
     private void OnDead()
     {
         rb.velocity = new Vector2(0, rb.velocity.y);
         particleSystem.gameObject.SetActive(true);
+        StartCoroutine("CameraShake");
     }
 
     void FlipTransform(Transform transf)
