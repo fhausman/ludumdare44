@@ -54,7 +54,6 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(interactiveObject);
         if (IsDead)
         {
             instantiatedParticleSystem.transform.position = trans.position;
@@ -312,7 +311,7 @@ public class PlayerController : MonoBehaviour
 
     void Respawn()
     {
-        DestroyImmediate(instantiatedParticleSystem);
+        Destroy(instantiatedParticleSystem.gameObject);
         IsDead = false;
         transform.position = respawnPlace;
         anim.enabled = true;
