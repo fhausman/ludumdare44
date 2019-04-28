@@ -8,6 +8,7 @@ TagManager:
   - Spikes
   - Interactive
   - Throwable
+  - Jaws
   layers:
   - Default
   - TransparentFX

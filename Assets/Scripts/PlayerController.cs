@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class CharacterController : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     public float Speed = 10f;
     public float JumpForce = 1f;
@@ -28,6 +28,8 @@ public class CharacterController : MonoBehaviour
     private new GameObject particleSystem;
     private Cinemachine.CinemachineBasicMultiChannelPerlin noiseSystem;
 
+    public bool IsDead { get { return dead; } }
+
     bool IsOnGround { get { return Physics2D.Linecast(trans.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground")); } }
 
     bool InRangeOfInteractiveObject { get { return interactiveObject != null; } }
@@ -43,7 +45,6 @@ public class CharacterController : MonoBehaviour
         collider = GetComponent<Collider2D>();
         particleSystem = trans.GetChild(1).gameObject;
         noiseSystem = VirtualCamera.GetCinemachineComponent<Cinemachine.CinemachineBasicMultiChannelPerlin>();
-
         distToGround = collider.bounds.extents.y;
     }
 
@@ -110,12 +111,15 @@ public class CharacterController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (dead) return;
+
         if (IsInteractive(collision.gameObject.tag))
         {
             //Collision is with child trigger so the parent has to be retrieved
             interactiveObject = collision.gameObject.transform.parent.gameObject;
         }
-        else if (collision.gameObject.tag == "Spikes")
+        else if (collision.gameObject.tag == "Spikes"
+            || collision.gameObject.tag == "Jaws")
         {
             OnDead(collision.gameObject.tag);
         }
@@ -253,13 +257,10 @@ public class CharacterController : MonoBehaviour
         FlipParticleSystem();
     }
 
-    void Throw()
+    void BasicThrow(GameObject throwable)
     {
         var throw_force_x = 10f;
         var throw_force_y = 3f;
-
-        var throwable = inventory.First(o => o.tag == "Throwable");
-        inventory.Remove(throwable);
 
         throwable.transform.parent = null;
         throwable.transform.position = trans.position;
@@ -269,6 +270,22 @@ public class CharacterController : MonoBehaviour
         var dir = facingRight ? Vector2.right : Vector2.left;
         trb.velocity = (dir * throw_force_x + Vector2.up * throw_force_y)
                 + dir * rb.velocity.x * Mathf.Sign(rb.velocity.x);
-        //trb.AddForce(dir * throw_force_x + Vector2.up * throw_force_y);
+    }
+
+    void Throw()
+    {
+        var throwable = inventory.First(o => o.tag == "Throwable");
+        inventory.Remove(throwable);
+
+        if (throwable.name == "Boomerang")
+        {
+            throwable.transform.parent = null;
+            throwable.SetActive(true);
+            throwable.GetComponent<BoomerangController>().Throw();
+        }
+        else
+        {
+            BasicThrow(throwable);
+        }
     }
 }
