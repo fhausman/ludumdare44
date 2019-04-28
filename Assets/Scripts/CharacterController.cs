@@ -267,8 +267,8 @@ public class CharacterController : MonoBehaviour
 
         var trb = throwable.GetComponent<Rigidbody2D>();
         var dir = facingRight ? Vector2.right : Vector2.left;
-        trb.velocity = (dir * throw_force_x + Vector2.up * throw_force_y);
-                //+ new Vector2(rb.velocity.x, 0);
+        trb.velocity = (dir * throw_force_x + Vector2.up * throw_force_y)
+                + dir * rb.velocity.x * Mathf.Sign(rb.velocity.x);
         //trb.AddForce(dir * throw_force_x + Vector2.up * throw_force_y);
     }
 }
