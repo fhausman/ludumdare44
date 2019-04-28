@@ -59,7 +59,7 @@ public class BoomerangController : MonoBehaviour
 
         var dir = distance > 0 ? Vector2.right : Vector2.left;
 
-        Func<float, float, float> percent_passed = (pos, start) => ((pos - start) / Mathf.Abs(distance))*100;
+        Func<float, float, float> percent_passed = (pos, start) => Mathf.Abs((pos - start) / distance)*100;
 
         while (Flying(target))
         {
