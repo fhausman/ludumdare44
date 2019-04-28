@@ -31,4 +31,22 @@ public class DogController : MonoBehaviour
             transform.localScale = ls;
         }
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.tag == "Player")
+        {
+            GetComponent<Animator>().speed = 1f;
+            triggered = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if(collision.tag == "Player")
+        {
+            GetComponent<Animator>().speed = 0.1f;
+            triggered = false;
+        }
+    }
 }
