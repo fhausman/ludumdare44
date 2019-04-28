@@ -40,7 +40,7 @@ public class BoomerangController : MonoBehaviour
 
         transform.Rotate(Vector3.forward, RotatationSpeed * Time.deltaTime);
 
-        return target != transform.position;
+        return target.x != transform.position.x;
     }
 
     void SetDeadly(bool deadly)
