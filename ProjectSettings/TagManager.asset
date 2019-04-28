@@ -7,6 +7,7 @@ TagManager:
   - Item
   - Spikes
   - Interactive
+  - Throwable
   layers:
   - Default
   - TransparentFX
@@ -17,8 +18,8 @@ TagManager:
   - 
   - 
   - Ground
-  - 
-  - 
+  - Items
+  - Character
   - 
   - 
   - 

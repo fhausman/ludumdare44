@@ -5113,7 +5113,7 @@ GameObject:
   - component: {fileID: 8392042156822999957}
   - component: {fileID: 6964828198965091674}
   - component: {fileID: 4512085822312480941}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Character
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5274,7 +5274,7 @@ PlatformEffector2D:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9152699010371796418}
   m_Enabled: 1
-  m_UseColliderMask: 1
+  m_UseColliderMask: 0
   m_ColliderMask:
     serializedVersion: 2
     m_Bits: 4294967295

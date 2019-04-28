@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class CharacterController : MonoBehaviour
@@ -21,6 +22,7 @@ public class CharacterController : MonoBehaviour
     private bool dead = false;
     private float distToGround = 0f;
     private List<GameObject> inventory = new List<GameObject>();
+    private List<string> interactiveTags = new List<string>() { "Item", "Interactive", "Throwable" };
 
     private GameObject interactiveObject;
     private new GameObject particleSystem;
@@ -29,6 +31,10 @@ public class CharacterController : MonoBehaviour
     bool IsOnGround { get { return Physics2D.Linecast(trans.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground")); } }
 
     bool InRangeOfInteractiveObject { get { return interactiveObject != null; } }
+
+    bool HasAnyThrowableObject { get { return inventory.Any(o => o.tag == "Throwable"); } }
+
+    bool IsInteractive(string tag) { return interactiveTags.Contains(tag); }
 
     void Start()
     {
@@ -62,7 +68,8 @@ public class CharacterController : MonoBehaviour
         #region Interaction
         if (Input.GetButtonDown("Take") && InRangeOfInteractiveObject)
         {
-            if (interactiveObject.tag == "Item")
+            if (interactiveObject.tag == "Item"
+                || interactiveObject.tag == "Throwable")
             {
                 Take();
             }
@@ -70,6 +77,13 @@ public class CharacterController : MonoBehaviour
             {
                 Interact();
             }
+        }
+        #endregion
+
+        #region Throwing
+        if (Input.GetButtonDown("Fire1") && HasAnyThrowableObject)
+        {
+            Throw();
         } 
         #endregion
     }
@@ -96,10 +110,10 @@ public class CharacterController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Item"
-            || collision.gameObject.tag == "Interactive")
+        if (IsInteractive(collision.gameObject.tag))
         {
-            interactiveObject = collision.gameObject;
+            //Collision is with child trigger so the parent has to be retrieved
+            interactiveObject = collision.gameObject.transform.parent.gameObject;
         }
         else if (collision.gameObject.tag == "Spikes")
         {
@@ -110,8 +124,7 @@ public class CharacterController : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Item"
-            || collision.gameObject.tag == "Interactive")
+        if (IsInteractive(collision.gameObject.tag))
         {
             interactiveObject = null;
         }
@@ -238,5 +251,24 @@ public class CharacterController : MonoBehaviour
         facingRight = !facingRight;
         FlipTransform(trans);
         FlipParticleSystem();
+    }
+
+    void Throw()
+    {
+        var throw_force_x = 10f;
+        var throw_force_y = 3f;
+
+        var throwable = inventory.First(o => o.tag == "Throwable");
+        inventory.Remove(throwable);
+
+        throwable.transform.parent = null;
+        throwable.transform.position = trans.position;
+        throwable.SetActive(true);
+
+        var trb = throwable.GetComponent<Rigidbody2D>();
+        var dir = facingRight ? Vector2.right : Vector2.left;
+        trb.velocity = (dir * throw_force_x + Vector2.up * throw_force_y);
+                //+ new Vector2(rb.velocity.x, 0);
+        //trb.AddForce(dir * throw_force_x + Vector2.up * throw_force_y);
     }
 }
