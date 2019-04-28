@@ -9,6 +9,7 @@ TagManager:
   - Interactive
   - Throwable
   - Jaws
+  - Boomerang
   layers:
   - Default
   - TransparentFX

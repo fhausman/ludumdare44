@@ -123,6 +123,13 @@ public class PlayerController : MonoBehaviour
         {
             OnDead(collision.gameObject.tag);
         }
+        else if (collision.gameObject.tag == "Boomerang")
+        {
+            if(collision.gameObject.GetComponentInParent<BoomerangController>().IsDeadly)
+            {
+                OnDead(collision.gameObject.tag);
+            }
+        }
 
     }
 
