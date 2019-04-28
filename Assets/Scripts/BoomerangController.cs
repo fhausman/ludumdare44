@@ -63,7 +63,7 @@ public class BoomerangController : MonoBehaviour
 
         while (Flying(target))
         {
-            SetDeadly(percent_passed(transform.position.x, player_pos_at_throw.x) > 10f);
+            SetDeadly(percent_passed(transform.position.x, player_pos_at_throw.x) > 50f);
             yield return null;
         }
         while(Flying(player_pos_at_throw))

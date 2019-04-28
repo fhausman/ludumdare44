@@ -238,6 +238,7 @@ MonoBehaviour:
   SpikesDeathSprite: {fileID: 21300002, guid: 51f9c9afe684e544589905733658d9e3, type: 3}
   ParticleSystem: {fileID: 1474348447851396619, guid: 50678d8b57633de48bc70e531131102d,
     type: 3}
+  DefaultRespawnPlace: {fileID: 0}
 --- !u!61 &118675445077149764
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -277,8 +278,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.08426924, y: 0.1532974}
-  m_Size: {x: 0.21202287, y: 0.5787901}
+  m_Offset: {x: 0.08426924, y: 0.26810798}
+  m_Size: {x: 0.21202287, y: 0.34916896}
   m_Direction: 0
 --- !u!251 &6964828198965091674
 PlatformEffector2D:

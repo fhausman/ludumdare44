@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     public Cinemachine.CinemachineVirtualCamera VirtualCamera;
     public Sprite SpikesDeathSprite;
     public ParticleSystem ParticleSystem;
+    public Transform DefaultRespawnPlace;
 
 
     private Rigidbody2D rb;
@@ -21,16 +22,17 @@ public class PlayerController : MonoBehaviour
 
     private bool facingRight = true;
     private bool jump = false;
-    private bool dead = false;
     private float distToGround = 0f;
     private List<GameObject> inventory = new List<GameObject>();
     private List<string> interactiveTags = new List<string>() { "Item", "Interactive", "Throwable" };
 
     private GameObject interactiveObject;
+    private Vector3 respawnPlace;
     private ParticleSystem instantiatedParticleSystem;
+    private Animator anim;
     private Cinemachine.CinemachineBasicMultiChannelPerlin noiseSystem;
 
-    public bool IsDead { get { return dead; } }
+    public bool IsDead { get; private set; } = false;
 
     bool IsOnGround { get { return Physics2D.Linecast(trans.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground")); } }
 
@@ -46,12 +48,22 @@ public class PlayerController : MonoBehaviour
         trans = GetComponent<Transform>();
         collider = GetComponent<Collider2D>();
         noiseSystem = VirtualCamera.GetCinemachineComponent<Cinemachine.CinemachineBasicMultiChannelPerlin>();
+        anim = GetComponent<Animator>();
         distToGround = collider.bounds.extents.y;
     }
 
     void Update()
     {
-        if (dead) return;
+        Debug.Log(interactiveObject);
+        if (IsDead)
+        {
+            instantiatedParticleSystem.transform.position = trans.position;
+            if(Input.GetKeyDown(KeyCode.R))
+            {
+                Respawn();
+            }
+            return;
+        }
 
         #region Jump
         if (Input.GetButtonDown("Jump") && IsOnGround)
@@ -92,7 +104,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (dead) return;
+        if (IsDead) return;
 
         var h = Input.GetAxis("Horizontal");
 
@@ -112,7 +124,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (dead) return;
+        if (IsDead) return;
 
         if (IsInteractive(collision.gameObject.tag))
         {
@@ -122,13 +134,13 @@ public class PlayerController : MonoBehaviour
         else if (collision.gameObject.tag == "Spikes"
             || collision.gameObject.tag == "Jaws")
         {
-            OnDead(collision.gameObject.tag);
+            OnDead(collision.gameObject);
         }
         else if (collision.gameObject.tag == "Boomerang")
         {
             if(collision.gameObject.GetComponentInParent<BoomerangController>().IsDeadly)
             {
-                OnDead(collision.gameObject.tag);
+                OnDead(collision.gameObject.transform.parent.gameObject);
             }
         }
 
@@ -151,7 +163,6 @@ public class PlayerController : MonoBehaviour
     void DeathOnSpikes()
     {
         //Disable animator
-        var anim = GetComponent<Animator>();
         anim.enabled = false;
 
         //Replace sprite
@@ -173,9 +184,9 @@ public class PlayerController : MonoBehaviour
         rb.bodyType = RigidbodyType2D.Static;
     }
 
-    void OnDead(string dead_place)
+    void OnDead(GameObject killed_by)
     {
-        dead = true;
+        IsDead = true;
         //cancel horizontal movement
         rb.velocity = new Vector2(0, rb.velocity.y);
 
@@ -186,8 +197,12 @@ public class PlayerController : MonoBehaviour
         //camera shake
         StartCoroutine("CameraShake");
 
+        //get respawn object
+        var kbro = killed_by.GetComponent<RespawnObject>();
+        respawnPlace = kbro != null ? kbro.respawnObject.transform.position : DefaultRespawnPlace.position;
+
         //place specific death behaviour
-        switch(dead_place)
+        switch(killed_by.tag)
         {
             case "Spikes":
                 DeathOnSpikes();
@@ -272,21 +287,34 @@ public class PlayerController : MonoBehaviour
                 + dir * rb.velocity.x * Mathf.Sign(rb.velocity.x);
     }
 
+    void BoomerangThrow(GameObject throwable)
+    {
+        throwable.transform.position = transform.position;
+        throwable.transform.parent = null;
+        throwable.SetActive(true);
+        throwable.GetComponent<BoomerangController>().Throw();
+    }
+
     void Throw()
     {
         var throwable = inventory.First(o => o.tag == "Throwable");
         inventory.Remove(throwable);
 
-        if (throwable.name == "Boomerang")
+        if (throwable.name.Contains("Boomerang"))
         {
-            throwable.transform.position = transform.position;
-            throwable.transform.parent = null;
-            throwable.SetActive(true);
-            throwable.GetComponent<BoomerangController>().Throw();
+            BoomerangThrow(throwable);
         }
         else
         {
             BasicThrow(throwable);
         }
+    }
+
+    void Respawn()
+    {
+        DestroyImmediate(instantiatedParticleSystem);
+        IsDead = false;
+        transform.position = respawnPlace;
+        anim.enabled = true;
     }
 }
