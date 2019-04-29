@@ -9,11 +9,13 @@ public class PlayerController : MonoBehaviour
     public float Speed = 10f;
     public float JumpForce = 1f;
     public float JumpTime = 10f;
+    public float GlideGravity = 1f;
     public Transform groundCheck;
     public Cinemachine.CinemachineVirtualCamera VirtualCamera;
     public Sprite SpikesDeathSprite;
     public ParticleSystem ParticleSystem;
     public Transform DefaultRespawnPlace;
+    public GameObject umbrella;
 
     private Rigidbody2D rb;
     private Transform trans;
@@ -21,6 +23,8 @@ public class PlayerController : MonoBehaviour
 
     private bool facingRight = true;
     private bool jump = false;
+    private bool gliding = false;
+    private float gravity;
     private float distToGround = 0f;
     private List<GameObject> inventory = new List<GameObject>();
     private List<string> interactiveTags = new List<string>() { "Item", "Interactive", "Throwable" };
@@ -44,6 +48,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        gravity = rb.gravityScale;
         trans = GetComponent<Transform>();
         collider = GetComponent<Collider2D>();
         noiseSystem = VirtualCamera.GetCinemachineComponent<Cinemachine.CinemachineBasicMultiChannelPerlin>();
@@ -61,6 +66,15 @@ public class PlayerController : MonoBehaviour
                 Respawn();
             }
             return;
+        }
+
+        if(Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            gliding = true;
+        }
+        if(Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            gliding = false;
         }
 
         #region Jump
@@ -117,6 +131,15 @@ public class PlayerController : MonoBehaviour
         if (jump)
         {
             Jump();
+        }
+
+        if (gliding)
+        {
+            Glide();
+        }
+        else
+        {
+            StopGlide();
         }
     }
 
@@ -254,6 +277,21 @@ public class PlayerController : MonoBehaviour
         }
 
         return false;
+    }
+
+    void Glide()
+    {
+        if (Mathf.Sign(rb.velocity.y) < 0 && !IsOnGround)
+        {
+            umbrella.SetActive(true);
+            rb.gravityScale = GlideGravity;
+        }
+    }
+
+    void StopGlide()
+    {
+        umbrella.SetActive(false);
+        rb.gravityScale = gravity;
     }
 
     IEnumerator CameraShake()
