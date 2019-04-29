@@ -344,7 +344,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 1
-  m_Offset: {x: 0.084171295, y: 2.376196}
+  m_Offset: {x: -0.15576172, y: 3.6953945}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -355,7 +355,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 103.34298, y: 27.895031}
+  m_Size: {x: 64.006546, y: 17.261456}
   m_EdgeRadius: 0
 --- !u!66 &642930917
 CompositeCollider2D:
@@ -377,20 +377,20 @@ CompositeCollider2D:
   m_ColliderPaths:
   - m_Collider: {fileID: 642930916}
     m_ColliderPaths:
-    - - X: 517556608
-        Y: 163237120
-      - X: -515873184
-        Y: 163237120
-      - X: -515873184
-        Y: -115713192
-      - X: 517556608
-        Y: -115713192
+    - - X: 318475104
+        Y: 123261224
+      - X: -321590336
+        Y: 123261224
+      - X: -321590336
+        Y: -49353332
+      - X: 318475104
+        Y: -49353332
   m_CompositePaths:
     m_Paths:
-    - - {x: 51.75566, y: 16.323711}
-      - {x: -51.58732, y: 16.323711}
-      - {x: -51.58732, y: -11.57132}
-      - {x: 51.75566, y: -11.57132}
+    - - {x: 31.847511, y: 12.326122}
+      - {x: -32.159035, y: 12.326122}
+      - {x: -32.159035, y: -4.9353333}
+      - {x: 31.847511, y: -4.9353333}
   m_VertexDistance: 0.0005
 --- !u!50 &642930918
 Rigidbody2D:
@@ -854,6 +854,12 @@ Camera:
     type: 3}
   m_PrefabInstance: {fileID: 1163320125}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &1044317456 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4902966067315965157, guid: ae1d823e1c19f6b4b8d02a3e4dba59b2,
+    type: 3}
+  m_PrefabInstance: {fileID: 1163320125}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1163320125
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -869,12 +875,12 @@ PrefabInstance:
     - target: {fileID: 4902966067315965157, guid: ae1d823e1c19f6b4b8d02a3e4dba59b2,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.015
+      value: 0.015000953
       objectReference: {fileID: 0}
     - target: {fileID: 4902966067315965157, guid: ae1d823e1c19f6b4b8d02a3e4dba59b2,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.3924999
+      value: 2.4718676
       objectReference: {fileID: 0}
     - target: {fileID: 4902966067315965157, guid: ae1d823e1c19f6b4b8d02a3e4dba59b2,
         type: 3}
@@ -1538,6 +1544,11 @@ PrefabInstance:
       propertyPath: cashObj
       value: 
       objectReference: {fileID: 891951574}
+    - target: {fileID: 9152699010371796441, guid: dee68db0640490e41b7b8608757982b3,
+        type: 3}
+      propertyPath: DefaultRespawnPlace
+      value: 
+      objectReference: {fileID: 1044317456}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dee68db0640490e41b7b8608757982b3, type: 3}
 --- !u!1 &1919178249
