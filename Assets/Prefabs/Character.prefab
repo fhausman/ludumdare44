@@ -265,7 +265,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 2
   m_Sprite: {fileID: 21300000, guid: 4b7c6f9dbe8b11c4cb193827aa34fc84, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -320,6 +320,7 @@ MonoBehaviour:
   ParticleSystem: {fileID: 1474348447851396619, guid: 50678d8b57633de48bc70e531131102d,
     type: 3}
   DefaultRespawnPlace: {fileID: 0}
+  umbrella: {fileID: 0}
 --- !u!61 &118675445077149764
 BoxCollider2D:
   m_ObjectHideFlags: 0

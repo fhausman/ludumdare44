@@ -72,7 +72,7 @@ public class PlayerController : MonoBehaviour
         {
             gliding = true;
         }
-        if(Input.GetKeyUp(KeyCode.LeftShift))
+        if(Input.GetKeyUp(KeyCode.LeftShift) || IsOnGround)
         {
             gliding = false;
         }
@@ -356,6 +356,8 @@ public class PlayerController : MonoBehaviour
     {
         Destroy(instantiatedParticleSystem.gameObject);
         IsDead = false;
+        gliding = false;
+        umbrella.SetActive(false);
         transform.position = respawnPlace;
         anim.enabled = true;
     }
