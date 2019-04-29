@@ -45,6 +45,11 @@ public class PlayerController : MonoBehaviour
 
     bool IsInteractive(string tag) { return interactiveTags.Contains(tag); }
 
+    bool killedByDog = false;
+    bool killedByPlane = false;
+    bool killedBySpikes = false;
+    bool killedByBoomerang = false;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -153,7 +158,8 @@ public class PlayerController : MonoBehaviour
             interactiveObject = collision.gameObject.transform.parent.gameObject;
         }
         else if (collision.gameObject.tag == "Spikes"
-            || collision.gameObject.tag == "Jaws")
+            || collision.gameObject.tag == "Jaws"
+            || collision.gameObject.tag == "Flugzeug")
         {
             OnDead(collision.gameObject);
         }
@@ -225,14 +231,26 @@ public class PlayerController : MonoBehaviour
         switch(killed_by.tag)
         {
             case "Spikes":
-                CashController.Cash += 100;
+                if(!killedBySpikes)
+                    CashController.Cash += 100;
                 DeathOnSpikes();
+                killedBySpikes = true;
                 break;
             case "Throwable":
-                CashController.Cash += 500;
+                if(!killedByBoomerang)
+                    CashController.Cash += 500;
+                killedByBoomerang = true;
                 break;
             case "Jaws":
-                CashController.Cash += 200;
+                if(!killedByDog)
+                    CashController.Cash += 200;
+                killedByDog = true;
+                break;
+            case "Flugzeug":
+                if(!killedByPlane)
+                    CashController.Cash += 1000;
+                rb.velocity = Vector2.zero;
+                killedByPlane = true;
                 break;
         }
     }
