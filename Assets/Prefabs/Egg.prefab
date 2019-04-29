@@ -69,6 +69,7 @@ GameObject:
   - component: {fileID: 7485970284810289744}
   - component: {fileID: 6371154551600772799}
   - component: {fileID: 7506060580661743539}
+  - component: {fileID: 5702094690051697275}
   m_Layer: 9
   m_Name: Egg
   m_TagString: Throwable
@@ -186,3 +187,17 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.08, y: 0.12}
   m_EdgeRadius: 0
+--- !u!114 &5702094690051697275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7485970284810289710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3150ca129c77d3c46995b5fe58098991, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  keyObject: {fileID: 7412241637474376820, guid: 4bca8256a190f38408d1356f039e8b30,
+    type: 3}
