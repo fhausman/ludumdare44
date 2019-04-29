@@ -15,7 +15,6 @@ public class PlayerController : MonoBehaviour
     public ParticleSystem ParticleSystem;
     public Transform DefaultRespawnPlace;
 
-
     private Rigidbody2D rb;
     private Transform trans;
     private new Collider2D collider;
@@ -188,7 +187,6 @@ public class PlayerController : MonoBehaviour
         IsDead = true;
         //cancel horizontal movement
         rb.velocity = new Vector2(0, rb.velocity.y);
-
         //launch blood
         instantiatedParticleSystem = Instantiate(ParticleSystem);
         instantiatedParticleSystem.transform.position = trans.position;
@@ -204,7 +202,14 @@ public class PlayerController : MonoBehaviour
         switch(killed_by.tag)
         {
             case "Spikes":
+                CashController.Cash += 100;
                 DeathOnSpikes();
+                break;
+            case "Throwable":
+                CashController.Cash += 500;
+                break;
+            case "Jaws":
+                CashController.Cash += 200;
                 break;
         }
     }
