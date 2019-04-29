@@ -313,7 +313,7 @@ MonoBehaviour:
   Speed: 6
   JumpForce: 7
   JumpTime: 0.2
-  GlideGravity: 1
+  GlideGravity: 0.1
   groundCheck: {fileID: 2691861659423863436}
   VirtualCamera: {fileID: 0}
   SpikesDeathSprite: {fileID: 21300002, guid: 51f9c9afe684e544589905733658d9e3, type: 3}
