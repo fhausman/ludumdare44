@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     public Transform groundCheck;
     public Cinemachine.CinemachineVirtualCamera VirtualCamera;
     public Sprite SpikesDeathSprite;
+    public Sprite GenericDeathSprite;
     public ParticleSystem ParticleSystem;
     public Transform DefaultRespawnPlace;
     public GameObject umbrella;
@@ -20,7 +21,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private Transform trans;
     private new Collider2D collider;
-
+    private SpriteRenderer rend;
     private bool facingRight = true;
     private bool jump = false;
     private bool gliding = false;
@@ -28,7 +29,6 @@ public class PlayerController : MonoBehaviour
     private float distToGround = 0f;
     private List<GameObject> inventory = new List<GameObject>();
     private List<string> interactiveTags = new List<string>() { "Item", "Interactive", "Throwable" };
-
     private GameObject interactiveObject;
     private Vector3 respawnPlace;
     private ParticleSystem instantiatedParticleSystem;
@@ -45,10 +45,12 @@ public class PlayerController : MonoBehaviour
 
     bool IsInteractive(string tag) { return interactiveTags.Contains(tag); }
 
+    #region KilledByFlags
     bool killedByDog = false;
     bool killedByPlane = false;
     bool killedBySpikes = false;
-    bool killedByBoomerang = false;
+    bool killedByBoomerang = false; 
+    #endregion
 
     void Start()
     {
@@ -56,6 +58,7 @@ public class PlayerController : MonoBehaviour
         gravity = rb.gravityScale;
         trans = GetComponent<Transform>();
         collider = GetComponent<Collider2D>();
+        rend = GetComponent<SpriteRenderer>();
         noiseSystem = VirtualCamera.GetCinemachineComponent<Cinemachine.CinemachineBasicMultiChannelPerlin>();
         anim = GetComponent<Animator>();
         distToGround = collider.bounds.extents.y;
@@ -193,7 +196,6 @@ public class PlayerController : MonoBehaviour
         anim.enabled = false;
 
         //Replace sprite
-        var rend = GetComponent<SpriteRenderer>();
         rend.sprite = SpikesDeathSprite;
 
         //Snap position to grid
@@ -226,6 +228,11 @@ public class PlayerController : MonoBehaviour
         //get respawn object
         var kbro = killed_by.GetComponent<RespawnObject>();
         respawnPlace = kbro != null ? kbro.respawnObject.transform.position : DefaultRespawnPlace.position;
+
+        //flip y and change sprite to dead
+        anim.enabled = false;
+        rend.sprite = GenericDeathSprite;
+        rend.flipY = true;
 
         //place specific death behaviour
         switch(killed_by.tag)
@@ -260,6 +267,9 @@ public class PlayerController : MonoBehaviour
         interactiveObject.transform.parent = trans;
         interactiveObject.SetActive(false);
         inventory.Add(interactiveObject);
+
+        var tc = interactiveObject.GetComponent<TakeabaleController>();
+        tc.DestroyInstance();
 
         interactiveObject = null;
     }
@@ -378,5 +388,6 @@ public class PlayerController : MonoBehaviour
         umbrella.SetActive(false);
         transform.position = respawnPlace;
         anim.enabled = true;
+        rend.flipY = false;
     }
 }

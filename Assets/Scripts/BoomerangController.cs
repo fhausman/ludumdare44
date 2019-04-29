@@ -13,11 +13,13 @@ public class BoomerangController : MonoBehaviour
     private GameObject playerRef;
     private GameObject killingCollider;
     private Rigidbody2D rb;
+    private TakeabaleController tc;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        tc = GetComponent<TakeabaleController>();
         boomerangRange = GameObject.Find("BoomerangRange");
         killingCollider = GameObject.Find("KillTrigger");
         playerRef = GameObject.FindGameObjectWithTag("Player");
@@ -51,6 +53,7 @@ public class BoomerangController : MonoBehaviour
 
     IEnumerator BoomerangThrow()
     {
+        tc.notTakeable = true;
         rb.constraints = RigidbodyConstraints2D.FreezePositionY;
 
         var target = boomerangRange.transform.position;
@@ -74,5 +77,6 @@ public class BoomerangController : MonoBehaviour
         SetDeadly(false);
         rb.constraints = RigidbodyConstraints2D.None;
         rb.AddForce(dir * 200f);
+        tc.notTakeable = false;
     }
 }

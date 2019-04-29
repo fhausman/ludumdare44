@@ -5,11 +5,18 @@ using UnityEngine;
 public class TakeabaleController : MonoBehaviour
 {
     public GameObject keyObject;
-    private GameObject instance;
+    public bool notTakeable = false;
+    private GameObject instance = null;
+
+    public void DestroyInstance()
+    {
+        Destroy(instance);
+        instance = null;
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag != "Player")
+        if (collision.gameObject.tag != "Player" || instance != null || notTakeable)
             return;
 
         keyObject.transform.position = transform.position + Vector3.up * 1f;
@@ -22,6 +29,6 @@ public class TakeabaleController : MonoBehaviour
         if (collision.gameObject.tag != "Player")
             return;
 
-        Destroy(instance);
+        DestroyInstance();
     }
 }

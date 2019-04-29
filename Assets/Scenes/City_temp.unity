@@ -1623,19 +1623,8 @@ PrefabInstance:
       propertyPath: DefaultRespawnPlace
       value: 
       objectReference: {fileID: 1044317456}
-    - target: {fileID: 9152699010371796441, guid: dee68db0640490e41b7b8608757982b3,
-        type: 3}
-      propertyPath: umbrella
-      value: 
-      objectReference: {fileID: 1848338007}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dee68db0640490e41b7b8608757982b3, type: 3}
---- !u!1 &1848338007 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1442616912314394974, guid: dee68db0640490e41b7b8608757982b3,
-    type: 3}
-  m_PrefabInstance: {fileID: 1618911484}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1919178249
 GameObject:
   m_ObjectHideFlags: 0
